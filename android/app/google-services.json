@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "489884048194",
+    "firebase_url": "https://auto-feed-29ce5-default-rtdb.firebaseio.com",
+    "project_id": "auto-feed-29ce5",
+    "storage_bucket": "auto-feed-29ce5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:489884048194:android:df7e6f6ed8999185bc06db",
+        "android_client_info": {
+          "package_name": "com.example.auto_feed"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9Z9HugRaIkrBiIrnBnrMoVfMF3-XHedA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
