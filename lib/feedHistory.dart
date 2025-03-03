@@ -45,8 +45,14 @@ class _FeedHistoryPageState extends State<FeedHistoryPage> {
           String day = feedTimes[index];
           Map<dynamic, dynamic> feedData = feedHistory[day];
           return ListTile(
-            title: Text("$day"),
-            subtitle: Text("$feedData"),
+            title: Text(day),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: feedData.entries.map((entry) {
+                return Text(
+                    "${entry.key}: Method: ${entry.value['Method']}, Time: ${entry.value['Time']}");
+              }).toList(),
+            ),
           );
         },
       ),
