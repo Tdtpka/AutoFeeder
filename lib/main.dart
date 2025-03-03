@@ -149,7 +149,10 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () => _selectTime(context),
               child: const Text("Chọn thời gian"),
             ),
-            ElevatedButton(onPressed: ()=>Navigator.push(context, MaterialPageRoute(builder: (context)=>FeedHistoryPage())), child: Text("History"))
+            ElevatedButton(
+                onPressed: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => FeedHistoryPage())),
+                child: const Text("History"))
           ],
         ),
       ),
