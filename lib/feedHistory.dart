@@ -1,4 +1,3 @@
-import 'package:auto_feed/history.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -39,21 +38,37 @@ class _FeedHistoryPageState extends State<FeedHistoryPage> {
 
     feedTimes.sort((a, b) => b.compareTo(a));
 
-    return Scaffold(
-      appBar: AppBar(),
-      body: ListView.builder(
+    return Center(
+      child: ListView.builder(
         itemCount: feedTimes.length,
         itemBuilder: (context, index) {
           String day = feedTimes[index];
-          Map<dynamic, dynamic> feedData = feedHistory[day];
-          return ListTile(
-            title: Text(day),
-            subtitle: Column(
+          List<dynamic> feedData = feedHistory[day];
+          return Container(
+            padding: EdgeInsets.all(20),
+            margin: EdgeInsets.all(30),
+            decoration: BoxDecoration(color: Colors.lightBlueAccent, borderRadius: BorderRadius.all(Radius.circular(20))),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: feedData.entries.map((entry) {
-                return Text(
-                    "${entry.key}: Method: ${entry.value['Method']}, Time: ${entry.value['Time']}");
-              }).toList(),
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("$day (${feedData.length})", style: TextStyle(fontSize: 20),),
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: SizedBox(
+                    height: 100,
+                    child: ListView.builder(
+                        itemCount: feedData.length,
+                        itemBuilder: (context, index){
+                          return Container(
+                            decoration: BoxDecoration(color: Colors.lightBlueAccent),
+                              child: Text("${index+1} : ${feedData[index]['Time']} - ${feedData[index]['Method']}"),
+                            );
+                          }
+                    ),
+                  )
+                ),
+              ],
             ),
           );
         },
