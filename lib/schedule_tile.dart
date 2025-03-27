@@ -41,7 +41,8 @@ class _ScheduleTileState extends State<ScheduleTile> {
             break;
         }
       }
-    }
+    }    
+    _status = widget.schedule['status'];
   }
 
   @override
@@ -82,9 +83,9 @@ class _ScheduleTileState extends State<ScheduleTile> {
                             .set(value);
                         break;
                       case "day":
-                        for (var i in widget.schedule['date']) {
+                        {
                           dbRef
-                              .child("day/$i/${widget.schedule['time']}")
+                              .child("day/${widget.schedule['date']}/${widget.schedule['time']}")
                               .set(value);
                         }
                         break;
@@ -96,6 +97,7 @@ class _ScheduleTileState extends State<ScheduleTile> {
                         }
                         break;
                     }
+                    dbRef.child("schedule/${widget.schedule['key']}/status").set(value);
                   });
                 }),
           ),

@@ -45,27 +45,25 @@ class _FeedHistoryPageState extends State<FeedHistoryPage> {
           String day = feedTimes[index];
           List<dynamic> feedData = feedHistory[day];
           return Container(
-            padding: EdgeInsets.all(20),
             margin: EdgeInsets.all(30),
-            decoration: BoxDecoration(color: Colors.lightBlueAccent, borderRadius: BorderRadius.all(Radius.circular(20))),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text("$day (${feedData.length})", style: TextStyle(fontSize: 20),),
+                Container(padding: EdgeInsets.all(8), decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)), color: Colors.amberAccent), child: Text("$day (${feedData.length})", style: TextStyle(fontSize: 20),)),
                 Padding(
                   padding: EdgeInsets.all(10),
-                  child: SizedBox(
-                    height: 100,
-                    child: ListView.builder(
-                        itemCount: feedData.length,
-                        itemBuilder: (context, index){
-                          return Container(
-                            decoration: BoxDecoration(color: Colors.lightBlueAccent),
-                              child: Text("${index+1} : ${feedData[index]['Time']} - ${feedData[index]['Method']}"),
-                            );
-                          }
-                    ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                      itemCount: feedData.length,
+                      itemBuilder: (context, index){
+                        return Container(
+                          padding: EdgeInsets.all(5),
+                          margin: EdgeInsets.symmetric(vertical: 5),
+                          decoration: BoxDecoration(border: Border.all(color: index.isEven? Colors.blueAccent: Colors.lightBlueAccent), borderRadius: const BorderRadius.all(Radius.circular(10))),
+                            child: Text("${index+1} : ${feedData[index]['Time']} - ${feedData[index]['Method']}"),
+                          );
+                        }
                   )
                 ),
               ],

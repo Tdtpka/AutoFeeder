@@ -1,4 +1,5 @@
 import 'package:auto_feed/feedhistory.dart';
+import 'package:auto_feed/firebase_options.dart';
 import 'package:auto_feed/home.dart';
 import 'package:auto_feed/schedule.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -6,15 +7,12 @@ import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-      options: const FirebaseOptions(
-    apiKey: "AIzaSyBsrZcPaky4y32ZajKiDy3HcfAvYCk3fjQ",
-    authDomain: "auto-feed-29ce5.firebaseapp.com",
-    databaseURL: "https://auto-feed-29ce5-default-rtdb.firebaseio.com",
-    appId: "1:489884048194:web:39100a5a8c884c3abc06db",
-    messagingSenderId: "489884048194",
-    projectId: "auto-feed-29ce5",
-  ));
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
   runApp(const MyApp());
 }
 
@@ -27,6 +25,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   int myIndex = 0;
+  String page = "Trang chủ";
   @override
   Widget build(BuildContext context) {
     List<Widget> listWidget = const [
@@ -35,26 +34,37 @@ class _MyAppState extends State<MyApp> {
       FeedHistoryPage()
     ];
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("$myIndex"),
-      ),
-      body: Center(child: listWidget[myIndex]),
-      bottomNavigationBar: BottomNavigationBar(
-          onTap: (index) {
-            setState(() {
-              myIndex = index;
-            });
-          },
-          currentIndex: myIndex,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.schedule), label: "Schedule"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.history), label: "History"),
-          ]),
-    ));
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            title: Text("$page"),
+          ),
+          body: Center(child: listWidget[myIndex]),
+          bottomNavigationBar: BottomNavigationBar(
+              onTap: (index) {
+                setState(() {
+                  switch (index) {
+                    case 0:
+                      page = "Trang chủ";
+                      break;
+                    case 1:
+                      page = "Lịch cho ăn";
+                      break;
+                    case 2:
+                      page = "Lịch sử";
+                  }
+                  myIndex = index;
+                });
+              },
+              currentIndex: myIndex,
+              items: const [
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: "Trang chủ"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.schedule), label: "Lịch"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.history), label: "Lịch sử"),
+              ]),
+        ));
   }
 }

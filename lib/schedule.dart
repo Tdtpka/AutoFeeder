@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:auto_feed/schedule_tile.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
@@ -9,19 +12,25 @@ class SchedulePage extends StatefulWidget {
 }
 
 class _SchedulePageState extends State<SchedulePage> {
-  bool multidaySwitch = false;
-  bool everydaySwitch = false;
-  bool daySwitch = false;
   final DatabaseReference _dbRef = FirebaseDatabase.instance.ref("/");
   List<Map<String, dynamic>> schedule = [];
+  StreamSubscription<DatabaseEvent>? _subscription;
   @override
   void initState() {
     super.initState();
     _loadData();
   }
 
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
+
   void _loadData() {
-    _dbRef.child("schedule").onValue.listen((DatabaseEvent event) {
+    _subscription =
+        _dbRef.child("schedule").onValue.listen((DatabaseEvent event) {
+      if (!mounted) return;
       final data = event.snapshot.value as List<dynamic>?;
       if (data != null) {
         setState(() {
@@ -33,19 +42,25 @@ class _SchedulePageState extends State<SchedulePage> {
                 case "every":
                   var time = data[i]['time'];
                   var date = "Mỗi ngày";
+                 bool status = data[i]['status'];
                   schedule.add({
+                    'key' : i,
                     'time': time,
                     'date': date,
                     'type': type,
+                    'status': status
                   });
                   break;
                 default:
                   var time = data[i]['time'];
                   var date = data[i]['date'];
+                  bool status = data[i]['status'];
                   schedule.add({
+                    'key': i,
                     'time': time,
                     'date': date,
                     'type': type,
+                    'status': status,
                   });
                   break;
               }
@@ -96,9 +111,12 @@ class _SchedulePageState extends State<SchedulePage> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: TextField(
-                            controller: hourController,
-                            textAlign: TextAlign.center,
-                          ),
+                              controller: hourController,
+                              textAlign: TextAlign.center,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ]),
                         ),
                       ),
                       const Text(":"),
@@ -106,9 +124,12 @@ class _SchedulePageState extends State<SchedulePage> {
                           child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: TextField(
-                          controller: minuteController,
-                          textAlign: TextAlign.center,
-                        ),
+                            controller: minuteController,
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ]),
                       ))
                     ],
                   )),
@@ -193,12 +214,39 @@ class _SchedulePageState extends State<SchedulePage> {
                     onPressed: () {
                       String time =
                           "${hourController.text.trim()}:${minuteController.text.trim()}";
+                      if (time.isEmpty || selectedDate == null) {
+                        showGeneralDialog(
+                            context: context,
+                            barrierLabel: "Popup",
+                            barrierDismissible: true,
+                            transitionDuration: Duration(milliseconds: 100),
+                            pageBuilder: (context, animation, animation2) {
+                              return Center(
+                                child: Container(
+                                  padding: EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      color: Colors.white),
+                                  width: 350,
+                                  child: Text(
+                                    "Chưa chọn ngày hoặc giờ",
+                                    style: TextStyle(
+                                        decoration: TextDecoration.none,
+                                        fontSize: 20,
+                                        color: Colors.black),
+                                  ),
+                                ),
+                              );
+                            });
+                        return;
+                      }
                       if (selectedDate != null) {
                         date = selectedDate!.toLocal().toString().split(" ")[0];
                         _dbRef.child("day/$date/$time").set(true);
                         _dbRef
                             .child("schedule/${schedule.length}")
-                            .set({'date': date, 'time': time, 'type': 'day'});
+                            .set({'date': date, 'time': time, 'type': 'day', 'status': true});
                         _loadData();
                         Navigator.pop(context);
                       }
@@ -217,12 +265,18 @@ class _SchedulePageState extends State<SchedulePage> {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Column(children: [
-      FloatingActionButton(
-        onPressed: () {
-          _showCustomDialog(context);
-        },
-        child: const Text("+"),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+      const SizedBox(
+        height: 30,
+      ),
+      Container(
+        margin: EdgeInsets.symmetric(horizontal: 30),
+        child: FloatingActionButton(
+          onPressed: () {
+            _showCustomDialog(context);
+          },
+          child: const Text("+"),
+        ),
       ),
       SizedBox(
         height: MediaQuery.sizeOf(context).height * 0.7,
