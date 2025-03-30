@@ -1,4 +1,4 @@
-Dự án thiết kế sản phẩm "Máy cho thú cưng ăn điều khiển qua ứng dụng di động", sử dụng ESP32 và framework Flutter.
+Dự án thiết kế sản phẩm "Máy cho thú cưng ăn điều khiển qua ứng dụng di động", sử dụng ESP32, framework Flutter và Firebase.
 
 Công nghệ sử dụng:
 - Phần cứng:
@@ -9,7 +9,8 @@ Công nghệ sử dụng:
   - Framework Flutter.
   - Dart.
   - Arduino IDE.
-  
+  - Firebase.
+    
 Tính năng:
 - Điều khiển trực tiếp qua ứng dụng di động.
 - Đặt lịch qua ứng dụng.
